@@ -190,11 +190,13 @@ var maxSize = 100000
 
 var finalArr = [];
 var sum = 0;
+// var test = {};
 
 var traverseDirectoryToFindSize = (dir) => {
     dir.content.forEach(el => {
         if (el.type == 'd'){
             if (el.dirSize <= maxSize){
+                // test[el.name] = el.dirSize;
                 finalArr.push(el.dirSize);
             }
             traverseDirectoryToFindSize(el);
@@ -213,3 +215,5 @@ finalArr.forEach(e => {
 
 console.log(finalArr);
 console.log(sum);
+
+// console.log(test);
