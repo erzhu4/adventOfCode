@@ -14,28 +14,6 @@ function makeid() {
     return result;
 }
 
-// console.log(lineByLineArray);
-
-// let sampleStructure = {
-//     id: makeid(),
-//     type: 'd',
-//     name: 'abc',
-//     content: [
-//         {
-//             id: makeid(),
-//             type: 'f',
-//             name: 'xyz',
-//             size: 89293
-//         },
-//         {
-//             id: makeid(),
-//             type: 'd',
-//             name: 'ere',
-//             content: []
-//         }
-//     ]
-// }
-
 var currentDirectory = null;
 
 var rootDirectory = {
@@ -192,13 +170,15 @@ var finalArr = [];
 var sum = 0;
 // var test = {};
 
+let dirMapToSize = {};
+
 var traverseDirectoryToFindSize = (dir) => {
     dir.content.forEach(el => {
         if (el.type == 'd'){
             if (el.dirSize <= maxSize){
-                // test[el.name] = el.dirSize;
                 finalArr.push(el.dirSize);
             }
+            dirMapToSize[el.id] = el.dirSize;
             traverseDirectoryToFindSize(el);
         }
     });
@@ -213,7 +193,42 @@ finalArr.forEach(e => {
     sum += e;
 });
 
-console.log(finalArr);
+// console.log(finalArr);
 console.log(sum);
+
+//part 2----------------
+
+var setDerpSizeOfEachDirectory = (dir) => {
+    let result = 0;
+    dir.content.forEach(el => {
+        if (el.type == 'f'){
+            // result += el.size;
+        } else if (el.type == 'd'){
+            result += (el.dirSize);
+            result += setDerpSizeOfEachDirectory(el);
+        }
+    });
+    dir.derpSize = result;
+    return result;
+}
+
+// setDerpSizeOfEachDirectory(rootDirectory);
+
+let targetSize = 30000000 - 27463286;
+             //  42536714
+             //  8003064
+console.log(dirMapToSize);
+
+let smallestDirAboveTarget = rootDirectory.dirSize;
+
+Object.keys(dirMapToSize).forEach((key) => {
+    if (dirMapToSize[key] >= targetSize && dirMapToSize[key] < smallestDirAboveTarget){
+        smallestDirAboveTarget = dirMapToSize[key];
+    }
+});
+
+console.log("smallest Dir To Target ", smallestDirAboveTarget);
+
+
 
 // console.log(test);
