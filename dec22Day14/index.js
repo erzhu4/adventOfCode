@@ -1,6 +1,9 @@
 let inputArr = require('./input.js')();
 var SandUnit = require('./sand.js');
 
+var startTime = Date.now();
+    
+
 //-------------------------Helpers-------------------------------
 var displayArrayInConsole = (arr) => {
     for (var i = 0; i < arr.length; i++){
@@ -28,6 +31,7 @@ const config = {
 const SANDSTARTLOCATION = [0,500];
 const THEMAP = [];
 
+let totalNumberOfSandUnits = 0;
 let maxRows = 0;
 let maxCols = 0;
 
@@ -47,8 +51,11 @@ inputArr.forEach(line => {
     });
 });
 
-maxRows += 2;
-maxCols += 2;
+// console.log("max Rows: ", maxRows);
+// console.log("max Cols: ", maxCols);
+
+maxRows += 1;
+// maxCols += 2;
 
 //-------------------------build the map-------------------------------
 
@@ -99,8 +106,8 @@ drawLinesOnMapFromInput(inputArr);
 
 //------------------------------------------------------------------------------------------------------------------
 
-var startDroppingSand = function(){
-    console.log("start dropping the sand");
+var startDroppingSandPart1 = function(){
+    // console.log("start dropping the sand part1");
     let count = 0;
     let hasSandHitTheBottom = false;
     while (!hasSandHitTheBottom){
@@ -109,17 +116,79 @@ var startDroppingSand = function(){
         while (!sandUnit.hasSettled) {
             sandUnit.tick();
             // displayArrayInConsole(THEMAP);
-            // sleep(100);
+            // sleep(10);
         }
 
         hasSandHitTheBottom = THEMAP[THEMAP.length - 1].find(el => {
             return el == config.settledSandChar;
         });
     }
-
-    console.log("Final Count ", count - 1);
+    totalNumberOfSandUnits += count;
+    console.log("Final Count Part 1", count - 1);
 }
 
-startDroppingSand();
+startDroppingSandPart1();
+displayArrayInConsole(THEMAP);
+//----------------------------------------PART2--------------------------------------------------------------------------------
+
+var addColumnsToTheLeft = function(amount) {
+    SANDSTARTLOCATION[1] += amount;
+    for (var i = 0; i < amount; i++){
+        THEMAP.forEach(row => {
+            row.unshift(config.emptyAirChar);
+        });
+    }
+}
+
+var addColumnsToTheRight = function(amount) {
+    for (var i = 0; i < amount; i++){
+        THEMAP.forEach(row => {
+            row.push(config.emptyAirChar);
+        });
+    }
+}
+
+var adjustMapToWidth = function(minWidthNeeded){
+    if (SANDSTARTLOCATION[1] < (minWidthNeeded / 2)){
+        addColumnsToTheLeft((minWidthNeeded / 2) - SANDSTARTLOCATION[1]);
+    }
+
+    if ((maxCols - SANDSTARTLOCATION[1]) < (minWidthNeeded / 2) ){
+        addColumnsToTheRight((minWidthNeeded / 2) - (maxCols - SANDSTARTLOCATION[1]));
+    }
+
+}
+
+var startDroppingSandPart2 = function(){
+    // console.log("start dropping the sand part2");
+    let count = 0;
+    let hasHoleBeenPlugged = false;
+    while (!hasHoleBeenPlugged){
+        let sandUnit = new SandUnit(THEMAP, SANDSTARTLOCATION, config);
+        count += 1;
+        while (!sandUnit.hasSettled) {
+            sandUnit.tick();
+
+            // displayArrayInConsole(THEMAP);
+            // console.log('------------------------------');
+            // sleep(10);
+        }
+
+        hasHoleBeenPlugged = (THEMAP[SANDSTARTLOCATION[0]][SANDSTARTLOCATION[1]] == config.settledSandChar);
+    }
+
+    console.log("Final Count Part 2", count + totalNumberOfSandUnits);
+}
+
+var requiredWidth = (maxRows * 2) + 2;
+// console.log('requiredWidth', requiredWidth);
+adjustMapToWidth(requiredWidth);
+
+
+startDroppingSandPart2()
+displayArrayInConsole(THEMAP);
+var endTime = Date.now();
+
+console.log(`Time it took: ${endTime - startTime} milliseconds`)
 
 // displayArrayInConsole(THEMAP);
