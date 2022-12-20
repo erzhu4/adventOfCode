@@ -27,8 +27,8 @@ const config = {
     settledSandChar:'o'
 }
 
-// const SANDSTARTLOCATION = [0,7];
-const SANDSTARTLOCATION = [0,500];
+const SANDSTARTLOCATION = [0,7];
+// const SANDSTARTLOCATION = [0,500];
 const THEMAP = [];
 
 let totalNumberOfSandUnits = 0;
@@ -115,8 +115,8 @@ var startDroppingSandPart1 = function(){
         count += 1;
         while (!sandUnit.hasSettled) {
             sandUnit.tick();
-            // displayArrayInConsole(THEMAP);
-            // sleep(10);
+            displayArrayInConsole(THEMAP);
+            sleep(20);
         }
 
         hasSandHitTheBottom = THEMAP[THEMAP.length - 1].find(el => {
@@ -128,7 +128,7 @@ var startDroppingSandPart1 = function(){
 }
 
 startDroppingSandPart1();
-displayArrayInConsole(THEMAP);
+// displayArrayInConsole(THEMAP);
 //----------------------------------------PART2--------------------------------------------------------------------------------
 
 var addColumnsToTheLeft = function(amount) {
@@ -169,9 +169,9 @@ var startDroppingSandPart2 = function(){
         while (!sandUnit.hasSettled) {
             sandUnit.tick();
 
-            // displayArrayInConsole(THEMAP);
-            // console.log('------------------------------');
-            // sleep(10);
+            displayArrayInConsole(THEMAP);
+            console.log('------------------------------');
+            sleep(20);
         }
 
         hasHoleBeenPlugged = (THEMAP[SANDSTARTLOCATION[0]][SANDSTARTLOCATION[1]] == config.settledSandChar);
